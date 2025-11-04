@@ -1,6 +1,6 @@
-#include "input.h"
+#include "./include/input.h"
 #include "Arduino.h"
-#include "config.h"
+#include "./include/config.h"
 
 #include <EnableInterrupt.h>
 

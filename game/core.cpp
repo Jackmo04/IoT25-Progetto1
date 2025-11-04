@@ -1,7 +1,7 @@
-#include "core.h"
+#include "./include/core.h"
 #include "Arduino.h"
-#include "kernel.h"
-#include "input.h"
+#include "./include/kernel.h"
+#include "./include/input.h"
 
 #define MAX_TIME_IN_INTRO_STATE 5000
 #define MAX_TIME_IN_STAGE2_STATE 10000
