@@ -1,6 +1,6 @@
-#include "leds.h"
 #include "Arduino.h"
-#include "config.h"
+#include "include/leds.h"
+#include "include/config.h"
 
 static int greenPins[4] = {LED1_PIN, LED2_PIN, LED3_PIN, LED4_PIN};
 

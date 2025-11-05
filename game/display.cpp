@@ -1,7 +1,8 @@
-#include "display.h"
+#include "Arduino.h"
+#include "include/display.h"
+#include "include/config.h"
+
 #include <LiquidCrystal_I2C.h>
-#include "config.h"
-#include <Arduino.h>
 
 LiquidCrystal_I2C lcd(LCD_I2C_ADDRESS, LCD_COLS, LCD_ROWS);
 
@@ -73,6 +74,10 @@ void showLevel(int level, unsigned long startingTime){
   lcd.print(level);
 }
 
-void sleepMode(){
+void lcdSleep(){
   lcd.setBacklight(0);
+}
+
+void lcdWake(){
+  lcd.setBacklight(1);
 }

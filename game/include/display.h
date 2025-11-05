@@ -8,8 +8,8 @@ void showSequence(int seq[4]);
 void showGood(int score);
 void showGameOver(int score);
 void showScore(int score);
-void sleepMode();
-void lcdDisplaySleep();
+void lcdSleep();
+void lcdWake();
 void showLevel(int level, unsigned long startingTime);
 void gameOver();
 

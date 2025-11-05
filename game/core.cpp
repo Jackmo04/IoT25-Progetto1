@@ -1,10 +1,10 @@
-#include "core.h"
 #include "Arduino.h"
-#include "kernel.h"
-#include "input.h"
-#include "leds.h"
-#include "display.h"
-#include "config.h"
+#include "include/core.h"
+#include "include/kernel.h"
+#include "include/input.h"
+#include "include/leds.h"
+#include "include/display.h"
+#include "include/config.h"
 
 #include <avr/sleep.h>
 
@@ -90,10 +90,6 @@ void intro(){
     sleepNow();
     changeState(INTRO_STATE);
   }
-}
-
-void lcdDisplaySleep(){
-  clearDisplay();
 }
 
 void stage1(){
@@ -203,7 +199,7 @@ void wakeUpNow() {
 }
 
 void sleepNow() {
-  lcdDisplaySleep();
+  lcdSleep();
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
   sleep_enable();
   prepareSleep();
@@ -211,4 +207,5 @@ void sleepNow() {
   sleep_mode();
   Serial.println("Woke up!");
   sleep_disable();
+  lcdWake();
 }

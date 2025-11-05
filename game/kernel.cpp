@@ -1,4 +1,4 @@
-#include "kernel.h"
+#include "include/kernel.h"
 
 /* current state */
 int currentState;

@@ -1,9 +1,9 @@
-#include "kernel.h"
-#include "config.h"
-#include "core.h"
-#include "input.h"
-#include "leds.h"
-#include "display.h"
+#include "include/kernel.h"
+#include "include/config.h"
+#include "include/core.h"
+#include "include/input.h"
+#include "include/leds.h"
+#include "include/display.h"
 
 void setup() {
   initCore();
