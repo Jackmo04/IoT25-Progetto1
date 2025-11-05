@@ -5,5 +5,6 @@ void initInput();
 void resetButtons();
 void resetInput();
 bool isButtonPressed(int buttonIndex);
+void prepareSleep();
 
 #endif

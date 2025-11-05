@@ -11,50 +11,50 @@ void initDisplay(){
 
 void showWelcome(){
   lcd.clear();
-  lcd.setCursor(0,0);
+  lcd.setCursor(0, 0);
   lcd.print("Welcome to TOS!");
-  lcd.setCursor(0,1);
+  lcd.setCursor(0, 1);
   lcd.print("Press B1 to Start");
 }
 
 void showGo(){
   lcd.clear();
-  lcd.setCursor(0,0);
+  lcd.setCursor(0, 0);
   lcd.print("Go!");
 }
 
-void showSequence(int seq[4]){
+void showSequence(int seq[NUM_BUTTONS]){
   lcd.clear();
-  lcd.setCursor(0,0);
+  lcd.setCursor(0, 0);
   lcd.print("Sequence:");
-  lcd.setCursor(0,1);
-  for (int i=0;i<4;i++){
+  lcd.setCursor(0, 1);
+  for (int i = 0; i < NUM_BUTTONS; i++){
     lcd.print(seq[i]);
   }
 }
 
 void showGood(int score){
   lcd.clear();
-  lcd.setCursor(0,0);
+  lcd.setCursor(0, 0);
   lcd.print("GOOD!");
-  lcd.setCursor(0,1);
-  lcd.print("Score:");
+  lcd.setCursor(0, 1);
+  lcd.print("Score: ");
   lcd.print(score);
 }
 
 void showGameOver(int score){
   lcd.clear();
-  lcd.setCursor(0,0);
+  lcd.setCursor(0, 0);
   lcd.print("Game Over");
-  lcd.setCursor(0,1);
-  lcd.print("Final Score:");
+  lcd.setCursor(0, 1);
+  lcd.print("Final Score: ");
   lcd.print(score);
 }
 
 void showScore(int score){
   lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("Score:");
+  lcd.setCursor(0, 0);
+  lcd.print("Score: ");
   lcd.print(score);
 }
 

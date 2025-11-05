@@ -6,6 +6,8 @@
 #include "display.h"
 #include "config.h"
 
+#include <avr/sleep.h>
+
 #define MAX_TIME_IN_INTRO_STATE 10000
 #define GAMEOVER_RED_DURATION 2000
 #define SHOW_GAMEOVER_SECONDS 10000
@@ -19,14 +21,23 @@ int currentSequence[4];
 int inputPos = 0;
 int score = 0;
 bool inGame = false;
+unsigned long roundStartT = 0;
+
+void initCore(){
+  Serial.begin(9600);
+  randomSeed(analogRead(A7));
+  initLeds();
+  initDisplay();
+}
 
 int readLevelFromPot(){
   int v = analogRead(POT_PIN);
   int level = map(v, 0, 1023, 1, 4);
+  Serial.println("Level: " + String(level));
   return level;
 }
 
-float factorForLevel(int lvl){ //numeri casuali da sistemare
+float factorForLevel(int lvl){ // TODO numeri casuali da sistemare
   switch(lvl){
     case 1: return 0.92;
     case 2: return 0.86;
@@ -37,23 +48,14 @@ float factorForLevel(int lvl){ //numeri casuali da sistemare
 }
 
 void generateSequence(int seq[4]){
-  int n[4] = {1,2,3,4};
-  for (int i=0;i<4;i++){
-    int r = random(i,4);
-    int t = n[i]; 
-    n[i] = n[r]; 
+  int n[4] = {1, 2, 3, 4};
+  for (int i = 0; i < 4; i++){
+    int r = random(i, 4);
+    int t = n[i];
+    n[i] = n[r];
     n[r] = t;
   }
-  for (int i=0;i<4;i++) seq[i] = n[i];
-}
-
-unsigned long roundStartT = 0;
-
-void initCore(){
-  Serial.begin(9600);
-  randomSeed(analogRead(A7));
-  initLeds();
-  initDisplay();
+  for (int i = 0; i < 4; i++) seq[i] = n[i];
 }
 
 void enterInitialStateSetup(){
@@ -78,10 +80,7 @@ void intro(){
   if (getCurrentTimeInState() > MAX_TIME_IN_INTRO_STATE){
     allLedsOff();
     digitalWrite(RED_LED_PIN, LOW);
-    lcdDisplaySleep();
-    while(digitalRead(BUT01_PIN) == LOW){
-      delay(50);
-    }
+    sleepNow();
     changeState(INTRO_STATE);
   }
 }
@@ -191,4 +190,18 @@ void finalize(){
     Serial.println("Finalize...");
   }
   changeState(INTRO_STATE);
+}
+
+void wakeUpNow() {
+}
+
+void sleepNow() {
+  // lcdDisplaySleep();
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+  sleep_enable();
+  prepareSleep();
+  Serial.println("Going to sleep...");
+  sleep_mode();
+  Serial.println("Woke up!");
+  sleep_disable();
 }

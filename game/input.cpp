@@ -8,9 +8,9 @@
 
 uint8_t inputPins[NUM_BUTTONS] = {BUT01_PIN, BUT02_PIN, BUT03_PIN, BUT04_PIN};
 bool buttonPressed[NUM_BUTTONS] = {false, false, false, false};
-
-/* used for debouncing */
 long lastButtonPressedTimestamps[NUM_BUTTONS];
+
+bool sleepMode = false;
 
 void buttonHandler(int i, long timestamp);
 void buttonHandler0(){ buttonHandler(0, millis()); }
@@ -21,6 +21,10 @@ void buttonHandler3(){ buttonHandler(3, millis()); }
 void (*buttonHandlers[NUM_BUTTONS])() = { buttonHandler0, buttonHandler1, buttonHandler2, buttonHandler3 };
 
 void buttonHandler(int i, long timestamp){
+  if (sleepMode) {
+    sleepMode = false;
+    return;
+  }
   if (timestamp - lastButtonPressedTimestamps[i] > BOUNCING_TIME) {
     int status = digitalRead(inputPins[i]);
     if (status == HIGH && !buttonPressed[i]) {
@@ -54,4 +58,8 @@ void resetButtons(){
 
 bool isButtonPressed(int buttonIndex){
   return buttonPressed[buttonIndex];
+}
+
+void prepareSleep(){
+  sleepMode = true;
 }
