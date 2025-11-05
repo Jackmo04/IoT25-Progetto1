@@ -4,7 +4,7 @@
 
 #include <EnableInterrupt.h>
 
-#define BOUNCING_TIME 100
+#define BOUNCING_TIME 250
 
 uint8_t inputPins[NUM_BUTTONS] = {BUT01_PIN, BUT02_PIN, BUT03_PIN, BUT04_PIN};
 bool buttonPressed[NUM_BUTTONS] = {false, false, false, false};

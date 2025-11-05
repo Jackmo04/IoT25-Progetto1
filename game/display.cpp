@@ -1,11 +1,15 @@
 #include "display.h"
 #include <LiquidCrystal_I2C.h>
 #include "config.h"
+#include <Arduino.h>
 
 LiquidCrystal_I2C lcd(LCD_I2C_ADDRESS, LCD_COLS, LCD_ROWS);
 
+unsigned long lastDisplayLevel = 0;
+
 void initDisplay(){
-  lcd.begin(LCD_COLS, LCD_ROWS);
+  lcd.init();
+  lcd.backlight();
   lcd.clear();
 }
 
@@ -58,6 +62,17 @@ void showScore(int score){
   lcd.print(score);
 }
 
-void clearDisplay(){
+void showLevel(int level, unsigned long startingTime){
+  if (millis() - startingTime >= 2000) {
+    showWelcome();
+    return;
+  }
   lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Level: ");
+  lcd.print(level);
+}
+
+void sleepMode(){
+  lcd.setBacklight(0);
 }

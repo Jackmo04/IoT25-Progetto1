@@ -22,6 +22,7 @@ int inputPos = 0;
 int score = 0;
 bool inGame = false;
 unsigned long roundStartT = 0;
+int level = 1;
 
 void initCore(){
   Serial.begin(9600);
@@ -71,6 +72,12 @@ void intro(){
   }
 
   pulseRedLedInIntro();
+  int lvl;
+  if ((lvl = readLevelFromPot()) != level){
+    level = lvl;
+    showLevel(level, millis());
+    Serial.print("Level changed to: "); Serial.println(level);
+  }
 
   if (isButtonPressed(0)){
     changeState(STAGE1_STATE);
@@ -196,7 +203,7 @@ void wakeUpNow() {
 }
 
 void sleepNow() {
-  // lcdDisplaySleep();
+  lcdDisplaySleep();
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
   sleep_enable();
   prepareSleep();
