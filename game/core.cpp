@@ -10,11 +10,12 @@
 #include <avr/sleep.h>
 
 #define MAX_TIME_BEFORE_SLEEP 10000
-#define GAMEOVER_RED_DURATION 2000
-#define SHOW_GAMEOVER_SECONDS 10000
+#define GAMEOVER_LED_DURATION 2000
+#define GAMEOVER_DURATION 10000
 
 unsigned long T1_initial = 10000;
 unsigned long currentT1;
+unsigned long roundStartT = 0;
 
 float F_level = 0.92; //da sistemare
 
@@ -22,7 +23,6 @@ int currentSequence[4];
 int inputPos = 0;
 int score = 0;
 bool inGame = false;
-unsigned long roundStartT = 0;
 int level = 1;
 
 void initCore(){
@@ -136,15 +136,12 @@ void stage2(){
         if (inputPos >= 4){
           score++;
           showGood(score);
-          Serial.print("Good! score=");
-          Serial.println(score);
+          Serial.println("Good! Score: " + String(score));
           currentT1 = (unsigned long)((float)currentT1 * F_level);
           if (currentT1 < 500) 
             currentT1 = 500; //viene posto come tempo minimo di durata del round
-          delay(800);
           roundActive = false;
-          showScore(score);
-          delay(300);
+          delay(1500);
         }
       } else {
         Serial.println("Wrong button - Game Over");
@@ -160,23 +157,9 @@ void gameOver(){
   allLedsOff();
   setRedLed(true);
   showGameOver(score);
-  unsigned long t = millis();
-  while (millis() - t < GAMEOVER_RED_DURATION){
-    delay(50);
-  }
+  delay(GAMEOVER_LED_DURATION);
   setRedLed(false);
-  unsigned long t2 = millis();
-  while (millis() - t2 < SHOW_GAMEOVER_SECONDS){
-    delay(50);
-  }
-  changeState(INTRO_STATE);
-}
-
-//inutile
-void finalize(){
-  if (isJustEnteredInState()){
-    Serial.println("Finalize...");
-  }
+  delay(GAMEOVER_DURATION);
   changeState(INTRO_STATE);
 }
 
