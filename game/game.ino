@@ -20,11 +20,11 @@ void loop(){
   case INTRO_STATE:
     intro();
     break;
-  case STAGE1_STATE:
-    stage1();
+  case PREPARE_STATE:
+    prepareGame();
     break;
-  case STAGE2_STATE:
-    stage2();
+  case GAME_STATE:
+    playGame();
     break;
   }
 }

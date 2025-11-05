@@ -12,6 +12,7 @@
 #define MAX_TIME_BEFORE_SLEEP 10000
 #define GAMEOVER_LED_DURATION 2000
 #define GAMEOVER_DURATION 10000
+#define STARTING_TIME 10000
 
 unsigned long T1_initial = 10000;
 unsigned long currentT1;
@@ -52,7 +53,7 @@ void generateSequence(int seq[4]){
 
 void introSetup(){
   allLedsOff();
-  showWelcome();
+  displayWelcome();
   resetButtons();
 }
 
@@ -66,12 +67,12 @@ void intro(){
   int lvl;
   if ((lvl = readLevelFromPot()) != level){
     level = lvl;
-    showLevel(level, millis());
+    displayLevel(level, millis());
     Serial.print("Level changed to: "); Serial.println(level);
   }
 
   if (isButtonPressed(0)){
-    changeState(STAGE1_STATE);
+    changeState(PREPARE_STATE);
     return;
   }
 
@@ -81,11 +82,10 @@ void intro(){
   }
 }
 
-void stage1(){
+void prepareGame(){
   if (isJustEnteredInState()){
-    Serial.println("Stage1... starting game");
+    Serial.println("Preparing the game...");
     allLedsOff();
-    showGo();
     resetButtons();
     score = 0;
     inGame = true;
@@ -94,30 +94,33 @@ void stage1(){
     //da modificare
     int lvl = readLevelFromPot();
     F_level = factorForLevel(lvl);
-    delay(800);
-    changeState(STAGE2_STATE);
+    displayGo();
+    delay(1000);
+    changeState(GAME_STATE);
     return;
   }
 }
 
-void stage2(){
+void playGame(){
   static bool roundActive = false;
   if (isJustEnteredInState()){
-    Serial.println("Stage2...");
+    Serial.println("Starting game...");
     roundActive = false;
     resetButtons();
   }
 
-  if (!roundActive){
+  // Start of every round
+  if (!roundActive) {
     allLedsOff();
     generateSequence(currentSequence);
-    showSequence(currentSequence);
+    displaySequence(currentSequence);
     roundStartT = millis();
     inputPos = 0;
-    roundActive = true;
     Serial.print("Seq: ");
-    for (int i=0;i<4;i++) Serial.print(currentSequence[i]);
+    for (int i = 0; i < 4; i++) 
+      Serial.print(currentSequence[i]);
     Serial.println();
+    roundActive = true;
   }
 
   if (roundActive && (millis() - roundStartT) > currentT1){
@@ -135,7 +138,7 @@ void stage2(){
         inputPos++;
         if (inputPos >= 4){
           score++;
-          showGood(score);
+          displaySuccess(score);
           Serial.println("Good! Score: " + String(score));
           currentT1 = (unsigned long)((float)currentT1 * F_level);
           if (currentT1 < 500) 
@@ -156,7 +159,7 @@ void stage2(){
 void gameOver(){
   allLedsOff();
   setRedLed(true);
-  showGameOver(score);
+  displayGameOver(score);
   delay(GAMEOVER_LED_DURATION);
   setRedLed(false);
   delay(GAMEOVER_DURATION);

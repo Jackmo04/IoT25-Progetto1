@@ -14,7 +14,7 @@ void initDisplay(){
   lcd.backlight();
 }
 
-void showWelcome(){
+void displayWelcome(){
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Welcome to TOS!");
@@ -22,13 +22,13 @@ void showWelcome(){
   lcd.print("Press B1 to Start");
 }
 
-void showGo(){
+void displayGo(){
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Go!");
 }
 
-void showSequence(int seq[NUM_BUTTONS]){
+void displaySequence(int seq[NUM_BUTTONS]){
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Sequence:");
@@ -38,7 +38,7 @@ void showSequence(int seq[NUM_BUTTONS]){
   }
 }
 
-void showGood(int score){
+void displaySuccess(int score){
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("GOOD!");
@@ -47,7 +47,7 @@ void showGood(int score){
   lcd.print(score);
 }
 
-void showGameOver(int score){
+void displayGameOver(int score){
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Game Over");
@@ -56,16 +56,16 @@ void showGameOver(int score){
   lcd.print(score);
 }
 
-void showScore(int score){
+void displayScore(int score){
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Score: ");
   lcd.print(score);
 }
 
-void showLevel(int level, unsigned long startingTime){
+void displayLevel(int level, unsigned long startingTime){
   if (millis() - startingTime >= 2000) {
-    showWelcome();
+    displayWelcome();
     return;
   }
   lcd.clear();
