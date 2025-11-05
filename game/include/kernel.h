@@ -3,21 +3,15 @@
 
 #include "Arduino.h" 
 
-#define DEBUG
-
 /* general state management procedure */
 
 void initKernel();
 void updateStateTime();
-void changeState(int new_state);
+void changeState(int newState);
 
 int getCurrentState();
 long getCurrentTimeInState();
 long getEnteredStateTime();
-bool isJustEnteredInState();
-
-/* for debugging */
-void logMsg(const String& msg);
- 
+bool isJustEnteredInState(); 
 
 #endif

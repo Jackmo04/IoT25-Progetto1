@@ -10,8 +10,8 @@ unsigned long lastDisplayLevel = 0;
 
 void initDisplay(){
   lcd.init();
-  lcd.backlight();
   lcd.clear();
+  lcd.backlight();
 }
 
 void showWelcome(){

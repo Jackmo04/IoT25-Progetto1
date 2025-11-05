@@ -2,7 +2,7 @@
 #define __LEDS__
 
 void initLeds();
-void setLed(int index, bool on);
+void setGreenLed(int number, bool on);
 void setRedLed(bool on);
 void pulseRedLedInIntro();
 void allLedsOff();

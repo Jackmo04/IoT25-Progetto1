@@ -1,14 +1,15 @@
 #include "Arduino.h"
 #include "include/core.h"
 #include "include/kernel.h"
-#include "include/input.h"
+#include "include/buttons.h"
 #include "include/leds.h"
+#include "include/pot.h"
 #include "include/display.h"
 #include "include/config.h"
 
 #include <avr/sleep.h>
 
-#define MAX_TIME_IN_INTRO_STATE 10000
+#define MAX_TIME_BEFORE_SLEEP 10000
 #define GAMEOVER_RED_DURATION 2000
 #define SHOW_GAMEOVER_SECONDS 10000
 
@@ -25,17 +26,7 @@ unsigned long roundStartT = 0;
 int level = 1;
 
 void initCore(){
-  Serial.begin(9600);
   randomSeed(analogRead(A7));
-  initLeds();
-  initDisplay();
-}
-
-int readLevelFromPot(){
-  int v = analogRead(POT_PIN);
-  int level = map(v, 0, 1023, 1, 4);
-  Serial.println("Level: " + String(level));
-  return level;
 }
 
 float factorForLevel(int lvl){ // TODO numeri casuali da sistemare
@@ -59,16 +50,16 @@ void generateSequence(int seq[4]){
   for (int i = 0; i < 4; i++) seq[i] = n[i];
 }
 
-void enterInitialStateSetup(){
+void introSetup(){
   allLedsOff();
   showWelcome();
+  resetButtons();
 }
 
 void intro(){
   if (isJustEnteredInState()){
     Serial.println("Intro...");
-    enterInitialStateSetup();
-    resetInput();
+    introSetup();
   }
 
   pulseRedLedInIntro();
@@ -84,9 +75,7 @@ void intro(){
     return;
   }
 
-  if (getCurrentTimeInState() > MAX_TIME_IN_INTRO_STATE){
-    allLedsOff();
-    digitalWrite(RED_LED_PIN, LOW);
+  if (getCurrentTimeInState() > MAX_TIME_BEFORE_SLEEP){
     sleepNow();
     changeState(INTRO_STATE);
   }
@@ -97,7 +86,7 @@ void stage1(){
     Serial.println("Stage1... starting game");
     allLedsOff();
     showGo();
-    resetInput();
+    resetButtons();
     score = 0;
     inGame = true;
     currentT1 = T1_initial;
@@ -105,7 +94,6 @@ void stage1(){
     //da modificare
     int lvl = readLevelFromPot();
     F_level = factorForLevel(lvl);
-    Serial.print("Level: "); Serial.println(lvl);
     delay(800);
     changeState(STAGE2_STATE);
     return;
@@ -117,7 +105,7 @@ void stage2(){
   if (isJustEnteredInState()){
     Serial.println("Stage2...");
     roundActive = false;
-    resetInput();
+    resetButtons();
   }
 
   if (!roundActive){
@@ -142,8 +130,7 @@ void stage2(){
     if (isButtonPressed(b)) {
       int pressedDigit = b + 1;
       Serial.println("Pressed: " + String(pressedDigit));
-      setLed(pressedDigit, true);
-
+      setGreenLed(pressedDigit, true);
       if (pressedDigit == currentSequence[inputPos]) {
         inputPos++;
         if (inputPos >= 4){
@@ -152,21 +139,19 @@ void stage2(){
           Serial.print("Good! score=");
           Serial.println(score);
           currentT1 = (unsigned long)((float)currentT1 * F_level);
-          if (currentT1 < 500) currentT1 = 500; //viene posto come tempo minimo di durata del round
+          if (currentT1 < 500) 
+            currentT1 = 500; //viene posto come tempo minimo di durata del round
           delay(800);
-          resetButtons();
           roundActive = false;
           showScore(score);
           delay(300);
-        } else {
-          resetButtons();
         }
       } else {
         Serial.println("Wrong button - Game Over");
-        resetInput();
         gameOver();
         return;
       }
+      resetButtons();
     }
   }
 }
@@ -195,17 +180,16 @@ void finalize(){
   changeState(INTRO_STATE);
 }
 
-void wakeUpNow() {
-}
-
 void sleepNow() {
+  allLedsOff();
   lcdSleep();
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
   sleep_enable();
-  prepareSleep();
   Serial.println("Going to sleep...");
+  prepareSleep();
   sleep_mode();
-  Serial.println("Woke up!");
   sleep_disable();
+  initButtons();
+  Serial.println("Woke up!");
   lcdWake();
 }
