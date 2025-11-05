@@ -136,10 +136,11 @@ void stage2(){
     return;
   }
 
-  for (int b=0; b<NUM_BUTTONS; b++){
+  for (int b = 0; b < NUM_BUTTONS; b++){
+    updateInput();
     if (isButtonPressed(b)){
-      int pressedDigit = b+1;
-      Serial.print("Pressed: "); Serial.println(pressedDigit);
+      int pressedDigit = b + 1;
+      Serial.println("Pressed: " + String(pressedDigit));
       setLed(pressedDigit, true);
 
       if (pressedDigit == currentSequence[inputPos]){
@@ -152,15 +153,16 @@ void stage2(){
           currentT1 = (unsigned long)((float)currentT1 * F_level);
           if (currentT1 < 500) currentT1 = 500; //viene posto come tempo minimo di durata del round
           delay(800);
-          resetInput();
+          resetButtons();
           roundActive = false;
           showScore(score);
           delay(300);
         } else {
-          resetInput();
+          resetButtons();
         }
       } else {
         Serial.println("Wrong button - Game Over");
+        resetInput();
         gameOver();
         return;
       }
