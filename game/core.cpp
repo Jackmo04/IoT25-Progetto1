@@ -137,13 +137,12 @@ void stage2(){
   }
 
   for (int b = 0; b < NUM_BUTTONS; b++){
-    updateInput();
-    if (isButtonPressed(b)){
+    if (isButtonPressed(b)) {
       int pressedDigit = b + 1;
       Serial.println("Pressed: " + String(pressedDigit));
       setLed(pressedDigit, true);
 
-      if (pressedDigit == currentSequence[inputPos]){
+      if (pressedDigit == currentSequence[inputPos]) {
         inputPos++;
         if (inputPos >= 4){
           score++;
