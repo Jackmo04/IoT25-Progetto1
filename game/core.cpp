@@ -11,7 +11,7 @@
 
 #define MAX_TIME_BEFORE_SLEEP 10000
 #define GAMEOVER_LED_DURATION 2000
-#define GAMEOVER_DURATION 10000
+#define GAMEOVER_TOTAL_DURATION 10000
 #define STARTING_TIME 10000
 
 unsigned long T1_initial = 10000;
@@ -59,7 +59,9 @@ void introSetup(){
 
 void intro(){
   if (isJustEnteredInState()){
+    #ifdef DEBUG
     Serial.println("Intro...");
+    #endif
     introSetup();
   }
 
@@ -68,7 +70,9 @@ void intro(){
   if ((lvl = readLevelFromPot()) != level){
     level = lvl;
     displayLevel(level, millis());
+    #ifdef DEBUG
     Serial.print("Level changed to: "); Serial.println(level);
+    #endif
   }
 
   if (isButtonPressed(0)){
@@ -84,7 +88,9 @@ void intro(){
 
 void prepareGame(){
   if (isJustEnteredInState()){
+    #ifdef DEBUG
     Serial.println("Preparing the game...");
+    #endif
     allLedsOff();
     resetButtons();
     score = 0;
@@ -104,7 +110,9 @@ void prepareGame(){
 void playGame(){
   static bool roundActive = false;
   if (isJustEnteredInState()){
+    #ifdef DEBUG
     Serial.println("Starting game...");
+    #endif
     roundActive = false;
     resetButtons();
   }
@@ -116,15 +124,19 @@ void playGame(){
     displaySequence(currentSequence);
     roundStartT = millis();
     inputPos = 0;
-    Serial.print("Seq: ");
+    #ifdef DEBUG
+    Serial.print("Sequence: ");
     for (int i = 0; i < 4; i++) 
       Serial.print(currentSequence[i]);
     Serial.println();
+    #endif
     roundActive = true;
   }
 
   if (roundActive && (millis() - roundStartT) > currentT1){
+    #ifdef DEBUG
     Serial.println("Timeout - Game Over");
+    #endif
     gameOver();
     return;
   }
@@ -132,14 +144,18 @@ void playGame(){
   for (int b = 0; b < NUM_BUTTONS; b++){
     if (isButtonPressed(b)) {
       int pressedDigit = b + 1;
+      #ifdef DEBUG
       Serial.println("Pressed: " + String(pressedDigit));
+      #endif
       setGreenLed(pressedDigit, true);
       if (pressedDigit == currentSequence[inputPos]) {
         inputPos++;
         if (inputPos >= 4){
           score++;
           displaySuccess(score);
-          Serial.println("Good! Score: " + String(score));
+          #ifdef DEBUG
+          Serial.println("Correct! Score: " + String(score));
+          #endif
           currentT1 = (unsigned long)((float)currentT1 * F_level);
           if (currentT1 < 500) 
             currentT1 = 500; //viene posto come tempo minimo di durata del round
@@ -147,7 +163,9 @@ void playGame(){
           delay(1500);
         }
       } else {
-        Serial.println("Wrong button - Game Over");
+        #ifdef DEBUG
+        Serial.println("Wrong button!");
+        #endif
         gameOver();
         return;
       }
@@ -157,12 +175,16 @@ void playGame(){
 }
 
 void gameOver(){
+  #ifdef DEBUG
+  Serial.println("Game Over! Final Score: " + String(score));
+  Serial.println("Returning to Intro in " + String(GAMEOVER_TOTAL_DURATION / 1000.0) + " seconds...");
+  #endif
   allLedsOff();
   setRedLed(true);
   displayGameOver(score);
   delay(GAMEOVER_LED_DURATION);
   setRedLed(false);
-  delay(GAMEOVER_DURATION);
+  delay(GAMEOVER_TOTAL_DURATION - GAMEOVER_LED_DURATION);
   changeState(INTRO_STATE);
 }
 
@@ -171,11 +193,15 @@ void sleepNow() {
   lcdSleep();
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
   sleep_enable();
+  #ifdef DEBUG
   Serial.println("Going to sleep...");
+  #endif
   prepareSleep();
   sleep_mode();
   sleep_disable();
   initButtons();
+  #ifdef DEBUG
   Serial.println("Woke up!");
+  #endif
   lcdWake();
 }

@@ -29,9 +29,12 @@ void buttonHandler(int i, long timestamp){
         buttonPressed[i] = true;
         lastButtonPressedTimestamps[i] = timestamp;
     }
-  } else {
+  } 
+  #ifdef DEBUG_VERBOSE
+  else {
     Serial.println("Button " + String(i+1) + " ignored due to bouncing");
   }
+  #endif
 }
 
 void initButtons(){

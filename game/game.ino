@@ -6,7 +6,9 @@
 #include "include/display.h"
 
 void setup() {
+  #ifdef DEBUG
   Serial.begin(9600);
+  #endif
   initButtons();
   initLeds();
   initDisplay();
