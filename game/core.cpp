@@ -81,6 +81,7 @@ void intro(){
         Serial.print("Level changed to: "); Serial.println(level);
         #endif
       }
+      pulseRedLedInIntro();
     }
   }
   

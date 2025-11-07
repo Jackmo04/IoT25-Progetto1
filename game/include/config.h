@@ -26,8 +26,8 @@
 #define LCD_ROWS 2
 
 // Debug and simulation settings, comment/uncomment as needed
-#define DEBUG               // Enable debug serial output
+// #define DEBUG               // Enable debug serial output
 // #define DEBUG_VERBOSE       // Enable verbose debug output
-#define WOKWI_SIMULATION    // Enable ONLY if running in Wokwi simulation environment
+// #define WOKWI_SIMULATION    // Enable ONLY if running in Wokwi simulation environment
 
 #endif
