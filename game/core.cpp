@@ -13,6 +13,7 @@
 #define GAMEOVER_LED_DURATION 2000
 #define GAMEOVER_TOTAL_DURATION 10000
 #define STARTING_TIME 10000
+#define LVL_SCREEN_DURATION 2000
 
 unsigned long T1_initial = 10000;
 unsigned long currentT1;
@@ -67,12 +68,27 @@ void intro(){
 
   pulseRedLedInIntro();
   int lvl;
-  if ((lvl = readLevelFromPot()) != level){
-    level = lvl;
-    displayLevel(level, millis());
-    #ifdef DEBUG
-    Serial.print("Level changed to: "); Serial.println(level);
-    #endif
+  bool levelChanged = false;
+  if ((lvl = readLevelFromPot()) != level) {
+    unsigned long lastLvlChangeT = millis();
+    levelChanged = true;
+    while (millis() - lastLvlChangeT <= LVL_SCREEN_DURATION){
+      if ((lvl = readLevelFromPot()) != level){
+        level = lvl;
+        lastLvlChangeT = millis();
+        displayLevel(level);
+        #ifdef DEBUG
+        Serial.print("Level changed to: "); Serial.println(level);
+        #endif
+      }
+    }
+  }
+  
+  if (levelChanged){
+    displayWelcome();
+    resetStateTime();
+    resetButtons();
+    levelChanged = false;
   }
 
   if (isButtonPressed(0)){
@@ -80,6 +96,7 @@ void intro(){
     return;
   }
 
+  updateStateTime();
   if (getCurrentTimeInState() > MAX_TIME_BEFORE_SLEEP){
     sleepNow();
     changeState(INTRO_STATE);
@@ -98,8 +115,7 @@ void prepareGame(){
     currentT1 = T1_initial;
     inputPos = 0;
     //da modificare
-    int lvl = readLevelFromPot();
-    F_level = factorForLevel(lvl);
+    F_level = factorForLevel(level);
     displayGo();
     delay(1000);
     changeState(GAME_STATE);
@@ -122,7 +138,6 @@ void playGame(){
     allLedsOff();
     generateSequence(currentSequence);
     displaySequence(currentSequence);
-    roundStartT = millis();
     inputPos = 0;
     #ifdef DEBUG
     Serial.print("Sequence: ");
@@ -131,6 +146,7 @@ void playGame(){
     Serial.println();
     #endif
     roundActive = true;
+    roundStartT = millis();
   }
 
   if (roundActive && (millis() - roundStartT) > currentT1){
@@ -198,6 +214,10 @@ void sleepNow() {
   #endif
   prepareSleep();
   sleep_mode();
+  #ifdef WOKWI_SIMULATION
+  while (!isButtonPressed(0)) // busy wait to simulate sleep
+    delay(100);
+  #endif
   sleep_disable();
   initButtons();
   #ifdef DEBUG

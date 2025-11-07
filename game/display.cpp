@@ -63,11 +63,7 @@ void displayScore(int score){
   lcd.print(score);
 }
 
-void displayLevel(int level, unsigned long startingTime){
-  if (millis() - startingTime >= 2000) {
-    displayWelcome();
-    return;
-  }
+void displayLevel(int level){
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Level: ");

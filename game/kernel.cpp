@@ -32,3 +32,8 @@ void changeState(int newState){
 void updateStateTime(){
   currentTimeInState = millis() - enteredStateTime;
 }
+
+void resetStateTime(){
+  enteredStateTime = millis();
+  currentTimeInState = 0;
+}

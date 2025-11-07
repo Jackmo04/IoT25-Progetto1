@@ -10,7 +10,7 @@ void displayGameOver(int score);
 void displayScore(int score);
 void lcdSleep();
 void lcdWake();
-void displayLevel(int level, unsigned long startingTime);
+void displayLevel(int level);
 void gameOver();
 
 #endif

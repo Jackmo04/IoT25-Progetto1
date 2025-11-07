@@ -20,6 +20,9 @@ void (*buttonHandlers[NUM_BUTTONS])() = { buttonHandler0, buttonHandler1, button
 
 void buttonHandler(int i, long timestamp){
   if (sleeping) {
+    #ifdef WOKWI_SIMULATION
+    buttonPressed[i] = true;
+    #endif
     sleeping = false;
     return;
   }

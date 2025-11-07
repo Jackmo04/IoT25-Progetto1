@@ -3,11 +3,10 @@
 
 #include "Arduino.h" 
 
-/* general state management procedure */
-
 void initKernel();
 void updateStateTime();
 void changeState(int newState);
+void resetStateTime();
 
 int getCurrentState();
 long getCurrentTimeInState();
