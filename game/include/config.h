@@ -41,6 +41,6 @@
 // #define DEBUG_VERBOSE
 
 /* Uncomment ONLY if running in Wokwi simulation environment */
-#define WOKWI_SIMULATION
+// #define WOKWI_SIMULATION
 
 #endif
