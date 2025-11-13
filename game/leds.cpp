@@ -1,6 +1,7 @@
-#include "Arduino.h"
 #include "include/leds.h"
 #include "include/config.h"
+
+#include <Arduino.h>
 
 #define PULSE_SPEED_FACTOR 8
 

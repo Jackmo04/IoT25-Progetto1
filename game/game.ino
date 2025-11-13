@@ -5,6 +5,8 @@
 #include "include/leds.h"
 #include "include/display.h"
 
+#include <Arduino.h>
+
 void setup() {
   #ifdef DEBUG
   Serial.begin(9600);

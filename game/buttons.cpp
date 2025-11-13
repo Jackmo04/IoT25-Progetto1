@@ -1,7 +1,7 @@
-#include "Arduino.h"
 #include "include/buttons.h"
 #include "include/config.h"
 
+#include <Arduino.h>
 #include <EnableInterrupt.h>
 
 #define BOUNCING_TIME 250

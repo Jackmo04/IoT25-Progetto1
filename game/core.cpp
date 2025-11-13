@@ -1,4 +1,3 @@
-#include "Arduino.h"
 #include "include/core.h"
 #include "include/kernel.h"
 #include "include/buttons.h"
@@ -7,6 +6,7 @@
 #include "include/display.h"
 #include "include/config.h"
 
+#include <Arduino.h>
 #include <avr/sleep.h>
 
 #define MAX_TIME_BEFORE_SLEEP 10000

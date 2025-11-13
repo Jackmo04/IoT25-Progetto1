@@ -1,6 +1,7 @@
-#include "Arduino.h"
 #include "include/pot.h"
 #include "include/config.h"
+
+#include <Arduino.h>
 
 int readLevelFromPot(){
   int v = analogRead(POT_PIN);

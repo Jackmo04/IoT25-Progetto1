@@ -1,7 +1,7 @@
-#include "Arduino.h"
 #include "include/display.h"
 #include "include/config.h"
 
+#include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
 
 LiquidCrystal_I2C lcd(LCD_I2C_ADDRESS, LCD_COLS, LCD_ROWS);
