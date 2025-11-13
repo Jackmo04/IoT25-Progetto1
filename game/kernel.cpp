@@ -1,39 +1,48 @@
 #include "include/kernel.h"
 
+#include <Arduino.h>
+
 int currentState;
 long enteredStateTime;
 long currentTimeInState;
-bool firstCheckInState; 
+bool firstCheckInState;
 
-int getCurrentState(){
+int getCurrentState()
+{
   return currentState;
 }
 
-long getCurrentTimeInState(){
+long getCurrentTimeInState()
+{
   return currentTimeInState;
 }
 
-long getEnteredStateTime(){
+long getEnteredStateTime()
+{
   return enteredStateTime;
 }
 
-bool isJustEnteredInState(){
-  bool com = firstCheckInState;
+bool isJustEnteredInState()
+{
+  bool temp = firstCheckInState;
   firstCheckInState = false;
-  return com;
+  return temp;
 }
 
-void changeState(int newState){
+void changeState(int newState)
+{
   currentState = newState;
   enteredStateTime = millis();
   firstCheckInState = true;
 }
 
-void updateStateTime(){
+void updateStateTime()
+{
   currentTimeInState = millis() - enteredStateTime;
 }
 
-void resetStateTime(){
+void resetStateTime()
+{
   enteredStateTime = millis();
   currentTimeInState = 0;
 }

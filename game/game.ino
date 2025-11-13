@@ -7,10 +7,11 @@
 
 #include <Arduino.h>
 
-void setup() {
-  #ifdef DEBUG
+void setup()
+{
+#ifdef DEBUG
   Serial.begin(9600);
-  #endif
+#endif
   initButtons();
   initLeds();
   initDisplay();
@@ -18,17 +19,19 @@ void setup() {
   changeState(INTRO_STATE);
 }
 
-void loop(){ 
-  updateStateTime(); 
-  switch (getCurrentState()) { 
-    case INTRO_STATE:
-      intro();
-      break;
-    case SLEEPING_STATE:
-      sleepNow();
-      break;
-    case GAME_STATE:
-      playGame();
-      break;
+void loop()
+{
+  updateStateTime();
+  switch (getCurrentState())
+  {
+  case INTRO_STATE:
+    intro();
+    break;
+  case SLEEPING_STATE:
+    sleepNow();
+    break;
+  case GAME_STATE:
+    playGame();
+    break;
   }
 }
