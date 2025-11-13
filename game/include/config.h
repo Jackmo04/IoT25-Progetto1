@@ -25,9 +25,16 @@
 #define LCD_COLS 16
 #define LCD_ROWS 2
 
+// Game settings
+#define STARTING_AVAILABLE_TIME 10000
+#define LEVEL_1_FACTOR 0.95
+#define LEVEL_2_FACTOR 0.85
+#define LEVEL_3_FACTOR 0.75
+#define LEVEL_4_FACTOR 0.70
+
 // Debug and simulation settings, comment/uncomment as needed
 /* Enable debug serial output */
-// #define DEBUG
+#define DEBUG
 
 /* Enable verbose debug output */
 // #define DEBUG_VERBOSE

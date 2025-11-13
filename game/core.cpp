@@ -12,41 +12,42 @@
 #define MAX_TIME_BEFORE_SLEEP 10000
 #define GAMEOVER_LED_DURATION 2000
 #define GAMEOVER_TOTAL_DURATION 10000
-#define STARTING_AVAILABLE_TIME 10000
 #define LVL_SCREEN_DURATION 2000
+#define GO_SCREEN_DURATION 1000
+#define INTER_ROUND_DELAY 1500
 
-unsigned long T1_initial = 10000;
-unsigned long currentT1;
+unsigned long availableTime = STARTING_AVAILABLE_TIME;
 unsigned long roundStartT = 0;
-
-float F_level = 0.92; // da sistemare
 
 int currentSequence[4];
 int currentSeqIndex = 0;
 int score = 0;
 bool isRoundActive = false;
 bool inGame = false;
+
 int level = 1;
+double levelfactor;
 
 void initCore()
 {
   randomSeed(analogRead(A7));
 }
 
-float factorForLevel(int lvl)
-{ // TODO numeri casuali da sistemare
-  switch (lvl)
+double getLevelFactor()
+{
+  switch (level)
   {
   case 1:
-    return 0.92;
+    return LEVEL_1_FACTOR;
   case 2:
-    return 0.86;
+    return LEVEL_2_FACTOR;
   case 3:
-    return 0.79;
+    return LEVEL_3_FACTOR;
   case 4:
-    return 0.70;
+    return LEVEL_4_FACTOR;
+  default:
+    return LEVEL_1_FACTOR;
   }
-  return 0.92;
 }
 
 void generateSequence(int seq[NUM_BUTTONS])
@@ -125,12 +126,12 @@ void prepareGame()
   allLedsOff();
   score = 0;
   inGame = true;
-  currentT1 = T1_initial;
+  availableTime = STARTING_AVAILABLE_TIME;
   isRoundActive = false;
   // da modificare
-  F_level = factorForLevel(level);
+  levelfactor = getLevelFactor();
   displayGo();
-  delay(1000);
+  delay(GO_SCREEN_DURATION);
 }
 
 void prepareRound()
@@ -164,7 +165,7 @@ void playGame()
     prepareRound();
   }
 
-  if (isRoundActive && (millis() - roundStartT) > currentT1)
+  if (isRoundActive && (millis() - roundStartT) > availableTime)
   {
 #ifdef DEBUG
     Serial.println("Timeout!");
@@ -200,11 +201,14 @@ void playGame()
 #ifdef DEBUG
           Serial.println("Correct! Score: " + String(score));
 #endif
-          currentT1 = (unsigned long)((float)currentT1 * F_level);
-          if (currentT1 < 500)
-            currentT1 = 500;
+          availableTime *= levelfactor;
+          if (availableTime < 500)
+            availableTime = 500;
+#ifdef DEBUG
+          Serial.println("Available time: " + String(availableTime / 1000.0) + " s");
+#endif
           isRoundActive = false;
-          delay(1500);
+          delay(INTER_ROUND_DELAY);
         }
       }
     }
