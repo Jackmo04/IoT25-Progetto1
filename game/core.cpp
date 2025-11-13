@@ -247,7 +247,7 @@ void sleepNow()
     delay(200);
 #endif
   sleep_disable();
-  initButtons();
+  endSleep();
 #ifdef DEBUG
   Serial.println("Woke up!");
 #endif

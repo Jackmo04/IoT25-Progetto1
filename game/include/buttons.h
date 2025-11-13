@@ -6,5 +6,7 @@ void initButtons();
 bool isButtonPressed(int buttonIndex);
 void resetButtons();
 void prepareSleep();
+void endSleep();
+void wakeUp();
 
 #endif

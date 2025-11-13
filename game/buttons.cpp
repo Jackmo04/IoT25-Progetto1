@@ -9,7 +9,6 @@
 unsigned short inputPins[NUM_BUTTONS] = {BTN_01_PIN, BTN_02_PIN, BTN_03_PIN, BTN_04_PIN};
 volatile bool buttonPressed[NUM_BUTTONS] = {false, false, false, false};
 unsigned long lastButtonPressedTimestamps[NUM_BUTTONS];
-bool sleeping = false;
 
 void buttonHandler0() { buttonHandler(0); }
 void buttonHandler1() { buttonHandler(1); }
@@ -20,14 +19,6 @@ void (*buttonHandlers[NUM_BUTTONS])() = {buttonHandler0, buttonHandler1, buttonH
 
 void buttonHandler(int i)
 {
-  if (sleeping)
-  {
-#ifdef WOKWI_SIMULATION
-    buttonPressed[i] = true;
-#endif
-    sleeping = false;
-    return;
-  }
   unsigned long timestamp = millis();
   if (timestamp - lastButtonPressedTimestamps[i] > BOUNCING_TIME)
   {
@@ -72,11 +63,28 @@ void resetButtons()
   }
 }
 
+void wakeUp()
+{
+#ifdef WOKWI_SIMULATION
+  buttonPressed[0] = true;
+#endif
+}
+
 void prepareSleep()
 {
-  for (int i = 1; i < NUM_BUTTONS; i++)
+  for (int i = 0; i < NUM_BUTTONS; i++)
   {
     disableInterrupt(inputPins[i]);
   }
-  sleeping = true;
+  enableInterrupt(inputPins[0], wakeUp, CHANGE);
+}
+
+void endSleep()
+{
+  disableInterrupt(inputPins[0]);
+  for (int i = 0; i < NUM_BUTTONS; i++)
+  {
+    enableInterrupt(inputPins[i], buttonHandlers[i], CHANGE);
+    buttonPressed[i] = false;
+  }
 }
