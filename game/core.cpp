@@ -73,6 +73,7 @@ void intro()
 #endif
     allLedsOff();
     displayWelcome();
+    resetButtons();
   }
   pulseRedLedInIntro();
 
@@ -180,7 +181,7 @@ void playGame()
     {
       int pressedDigit = b + 1;
 #ifdef DEBUG
-      Serial.println("Pressed: " + String(pressedDigit));
+      Serial.println("Registered: " + String(pressedDigit));
 #endif
       setGreenLed(pressedDigit, true);
       if (pressedDigit != currentSequence[currentSeqIndex])
@@ -208,6 +209,7 @@ void playGame()
           Serial.println("Available time: " + String(availableTime / 1000.0) + " s");
 #endif
           isRoundActive = false;
+          resetButtons();
           delay(INTER_ROUND_DELAY);
         }
       }

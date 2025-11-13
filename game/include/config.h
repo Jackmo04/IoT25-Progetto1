@@ -37,7 +37,7 @@
 #define DEBUG
 
 /* Enable verbose debug output */
-// #define DEBUG_VERBOSE
+#define DEBUG_VERBOSE
 
 /* Uncomment ONLY if running in Wokwi simulation environment */
 #define WOKWI_SIMULATION
