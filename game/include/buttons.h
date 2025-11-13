@@ -3,7 +3,6 @@
 
 void buttonHandler(int i, long timestamp);
 void initButtons();
-void resetButtons();
 bool isButtonPressed(int buttonIndex);
 void prepareSleep();
 

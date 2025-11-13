@@ -21,14 +21,14 @@ void setup() {
 void loop(){ 
   updateStateTime(); 
   switch (getCurrentState()) { 
-  case INTRO_STATE:
-    intro();
-    break;
-  case PREPARE_STATE:
-    prepareGame();
-    break;
-  case GAME_STATE:
-    playGame();
-    break;
+    case INTRO_STATE:
+      intro();
+      break;
+    case SLEEPING_STATE:
+      sleepNow();
+      break;
+    case GAME_STATE:
+      playGame();
+      break;
   }
 }

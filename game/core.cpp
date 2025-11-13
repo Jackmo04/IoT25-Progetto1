@@ -52,18 +52,13 @@ void generateSequence(int seq[4]){
   for (int i = 0; i < 4; i++) seq[i] = n[i];
 }
 
-void introSetup(){
-  allLedsOff();
-  displayWelcome();
-  resetButtons();
-}
-
 void intro(){
   if (isJustEnteredInState()){
     #ifdef DEBUG
     Serial.println("Intro...");
     #endif
-    introSetup();
+    allLedsOff();
+    displayWelcome();
   }
 
   pulseRedLedInIntro();
@@ -88,50 +83,43 @@ void intro(){
   if (levelChanged){
     displayWelcome();
     resetStateTime();
-    resetButtons();
     levelChanged = false;
   }
 
   if (isButtonPressed(0)){
-    changeState(PREPARE_STATE);
+    changeState(GAME_STATE);
     return;
   }
 
-  updateStateTime();
   if (getCurrentTimeInState() > MAX_TIME_BEFORE_SLEEP){
-    sleepNow();
-    changeState(INTRO_STATE);
+    changeState(SLEEPING_STATE);
   }
 }
 
 void prepareGame(){
-  if (isJustEnteredInState()){
-    #ifdef DEBUG
-    Serial.println("Preparing the game...");
-    #endif
-    allLedsOff();
-    resetButtons();
-    score = 0;
-    inGame = true;
-    currentT1 = T1_initial;
-    inputPos = 0;
-    //da modificare
-    F_level = factorForLevel(level);
-    displayGo();
-    delay(1000);
-    changeState(GAME_STATE);
-    return;
-  }
+  #ifdef DEBUG
+  Serial.println("Preparing the game...");
+  #endif
+  allLedsOff();
+  score = 0;
+  inGame = true;
+  currentT1 = T1_initial;
+  inputPos = 0;
+  //da modificare
+  F_level = factorForLevel(level);
+  displayGo();
+  delay(1000);
 }
 
 void playGame(){
   static bool roundActive = false;
+  
   if (isJustEnteredInState()){
+    prepareGame();
     #ifdef DEBUG
     Serial.println("Starting game...");
     #endif
     roundActive = false;
-    resetButtons();
   }
 
   // Start of every round
@@ -186,7 +174,6 @@ void playGame(){
         gameOver();
         return;
       }
-      resetButtons();
     }
   }
 }
@@ -225,4 +212,5 @@ void sleepNow() {
   Serial.println("Woke up!");
   #endif
   lcdWake();
+  changeState(INTRO_STATE);
 }

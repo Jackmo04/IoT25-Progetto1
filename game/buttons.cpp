@@ -45,17 +45,14 @@ void initButtons(){
     pinMode(inputPins[i], INPUT);  
     enableInterrupt(inputPins[i], buttonHandlers[i], CHANGE);
     lastButtonPressedTimestamps[i] = millis();
-  }
-}
-
-void resetButtons(){
-  for (int i = 0; i < NUM_BUTTONS; i++) {
     buttonPressed[i] = false;
   }
 }
 
 bool isButtonPressed(int buttonIndex){
-  return buttonPressed[buttonIndex];
+  bool pressed = buttonPressed[buttonIndex];
+  buttonPressed[buttonIndex] = false;
+  return pressed;
 }
 
 void prepareSleep(){
