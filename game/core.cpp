@@ -19,14 +19,13 @@
 unsigned long availableTime = STARTING_AVAILABLE_TIME;
 unsigned long roundStartT = 0;
 
-int currentSequence[4];
+int currentSequence[NUM_BUTTONS];
 int currentSeqIndex = 0;
 int score = 0;
 bool isRoundActive = false;
-bool inGame = false;
 
 int level = 1;
-double levelfactor;
+double levelfactor = LEVEL_1_FACTOR;
 
 void initCore()
 {
@@ -125,11 +124,10 @@ void prepareGame()
   Serial.println("Preparing the game...");
 #endif
   allLedsOff();
+  resetButtons();
   score = 0;
-  inGame = true;
   availableTime = STARTING_AVAILABLE_TIME;
   isRoundActive = false;
-  // da modificare
   levelfactor = getLevelFactor();
   displayGo();
   delay(GO_SCREEN_DURATION);
@@ -140,6 +138,7 @@ void prepareRound()
   allLedsOff();
   generateSequence(currentSequence);
   displaySequence(currentSequence);
+  resetButtons();
 #ifdef DEBUG
   Serial.print("Sequence: ");
   for (int i = 0; i < 4; i++)
@@ -209,10 +208,10 @@ void playGame()
           Serial.println("Available time: " + String(availableTime / 1000.0) + " s");
 #endif
           isRoundActive = false;
-          resetButtons();
           delay(INTER_ROUND_DELAY);
         }
       }
+      resetButtons();
     }
   }
 }

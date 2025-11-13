@@ -28,7 +28,6 @@ void buttonHandler(int i)
     sleeping = false;
     return;
   }
-  Serial.println("Interrupt on button " + String(i + 1));
   unsigned long timestamp = millis();
   if (timestamp - lastButtonPressedTimestamps[i] > BOUNCING_TIME)
   {

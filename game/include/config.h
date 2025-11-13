@@ -32,14 +32,15 @@
 #define LEVEL_3_FACTOR 0.75
 #define LEVEL_4_FACTOR 0.70
 
-// Debug and simulation settings, comment/uncomment as needed
+// Debug and simulation settings below, comment/uncomment as needed
+
 /* Enable debug serial output */
-#define DEBUG
+// #define DEBUG
 
 /* Enable verbose debug output */
-#define DEBUG_VERBOSE
+// #define DEBUG_VERBOSE
 
 /* Uncomment ONLY if running in Wokwi simulation environment */
-#define WOKWI_SIMULATION
+// #define WOKWI_SIMULATION
 
 #endif
