@@ -15,7 +15,7 @@
 #define LED_2_PIN 9
 #define LED_3_PIN 10
 #define LED_4_PIN 11
-#define RED_LED_PIN 13
+#define RED_LED_PIN 6
 
 // Pin assignments: other components
 #define POT_PIN A0

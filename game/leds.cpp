@@ -2,7 +2,7 @@
 #include "include/leds.h"
 #include "include/config.h"
 
-#define PULSE_SPEED_FACTOR 8
+#define PULSE_SPEED_FACTOR 5
 
 static int greenPins[4] = {LED_1_PIN, LED_2_PIN, LED_3_PIN, LED_4_PIN};
 
@@ -37,11 +37,12 @@ void pulseRedLedInIntro(){
     return;
   lastPulseT = now;
   pulseVal += pulseDir * PULSE_SPEED_FACTOR;
-  if (pulseVal >= 255) { 
+  if (pulseVal >= 255) {
     pulseVal = 255; 
     pulseDir = -1; 
   }
   else if (pulseVal <= 0) {
+    delay(50);
     pulseVal = 0;
     pulseDir = 1; 
   }
