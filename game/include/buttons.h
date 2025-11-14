@@ -1,10 +1,12 @@
 #ifndef __BUTTONS__
 #define __BUTTONS__
 
-void buttonHandler(int i, long timestamp);
+void buttonHandler(int i);
 void initButtons();
-void resetButtons();
 bool isButtonPressed(int buttonIndex);
+void resetButtons();
 void prepareSleep();
+void endSleep();
+void wakeUp();
 
 #endif

@@ -1,66 +1,90 @@
-#include "Arduino.h"
 #include "include/buttons.h"
 #include "include/config.h"
 
+#include <Arduino.h>
 #include <EnableInterrupt.h>
 
 #define BOUNCING_TIME 250
 
-uint8_t inputPins[NUM_BUTTONS] = {BTN_01_PIN, BTN_02_PIN, BTN_03_PIN, BTN_04_PIN};
-bool buttonPressed[NUM_BUTTONS] = {false, false, false, false};
-long lastButtonPressedTimestamps[NUM_BUTTONS];
-bool sleeping = false;
+unsigned short inputPins[NUM_BUTTONS] = {BTN_01_PIN, BTN_02_PIN, BTN_03_PIN, BTN_04_PIN};
+volatile bool buttonPressed[NUM_BUTTONS] = {false, false, false, false};
+unsigned long lastButtonPressedTimestamps[NUM_BUTTONS];
 
-void buttonHandler0(){ buttonHandler(0, millis()); }
-void buttonHandler1(){ buttonHandler(1, millis()); }
-void buttonHandler2(){ buttonHandler(2, millis()); }
-void buttonHandler3(){ buttonHandler(3, millis()); }
+void buttonHandler0() { buttonHandler(0); }
+void buttonHandler1() { buttonHandler(1); }
+void buttonHandler2() { buttonHandler(2); }
+void buttonHandler3() { buttonHandler(3); }
 
-void (*buttonHandlers[NUM_BUTTONS])() = { buttonHandler0, buttonHandler1, buttonHandler2, buttonHandler3 };
+void (*buttonHandlers[NUM_BUTTONS])() = {buttonHandler0, buttonHandler1, buttonHandler2, buttonHandler3};
 
-void buttonHandler(int i, long timestamp){
-  if (sleeping) {
-    #ifdef WOKWI_SIMULATION
-    buttonPressed[i] = true;
-    #endif
-    sleeping = false;
-    return;
-  }
-  if (timestamp - lastButtonPressedTimestamps[i] > BOUNCING_TIME) {
+void buttonHandler(int i)
+{
+  unsigned long timestamp = millis();
+  if (timestamp - lastButtonPressedTimestamps[i] > BOUNCING_TIME)
+  {
     int status = digitalRead(inputPins[i]);
-    if (status == HIGH && !buttonPressed[i]) {
-        buttonPressed[i] = true;
-        lastButtonPressedTimestamps[i] = timestamp;
+    if (status == HIGH && !buttonPressed[i])
+    {
+      buttonPressed[i] = true;
+      lastButtonPressedTimestamps[i] = timestamp;
     }
-  } 
-  #ifdef DEBUG_VERBOSE
-  else {
-    Serial.println("Button " + String(i+1) + " ignored due to bouncing");
   }
-  #endif
+#ifdef DEBUG_VERBOSE
+  else
+  {
+    Serial.println("Button " + String(i + 1) + " ignored due to bouncing");
+  }
+#endif
 }
 
-void initButtons(){
-  for (int i = 0; i < NUM_BUTTONS; i++) {
-    pinMode(inputPins[i], INPUT);  
+void initButtons()
+{
+  for (int i = 0; i < NUM_BUTTONS; i++)
+  {
+    pinMode(inputPins[i], INPUT);
     enableInterrupt(inputPins[i], buttonHandlers[i], CHANGE);
     lastButtonPressedTimestamps[i] = millis();
-  }
-}
-
-void resetButtons(){
-  for (int i = 0; i < NUM_BUTTONS; i++) {
     buttonPressed[i] = false;
   }
 }
 
-bool isButtonPressed(int buttonIndex){
-  return buttonPressed[buttonIndex];
+bool isButtonPressed(int buttonIndex)
+{
+  bool pressed = buttonPressed[buttonIndex];
+  buttonPressed[buttonIndex] = false;
+  return pressed;
 }
 
-void prepareSleep(){
-  for (int i = 1; i < NUM_BUTTONS; i++) {
+void resetButtons()
+{
+  for (int i = 0; i < NUM_BUTTONS; i++)
+  {
+    buttonPressed[i] = false;
+  }
+}
+
+void wakeUp()
+{
+#ifdef WOKWI_SIMULATION
+  buttonPressed[0] = true;
+#endif
+}
+
+void prepareSleep()
+{
+  for (int i = 0; i < NUM_BUTTONS; i++)
+  {
     disableInterrupt(inputPins[i]);
   }
-  sleeping = true;
+  enableInterrupt(inputPins[0], wakeUp, CHANGE);
+}
+
+void endSleep()
+{
+  disableInterrupt(inputPins[0]);
+  for (int i = 0; i < NUM_BUTTONS; i++)
+  {
+    enableInterrupt(inputPins[i], buttonHandlers[i], CHANGE);
+    buttonPressed[i] = false;
+  }
 }

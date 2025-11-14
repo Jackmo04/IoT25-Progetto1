@@ -1,20 +1,22 @@
-#include "Arduino.h"
 #include "include/display.h"
 #include "include/config.h"
 
+#include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
 
 LiquidCrystal_I2C lcd(LCD_I2C_ADDRESS, LCD_COLS, LCD_ROWS);
 
 unsigned long lastDisplayLevel = 0;
 
-void initDisplay(){
+void initDisplay()
+{
   lcd.init();
   lcd.clear();
   lcd.backlight();
 }
 
-void displayWelcome(){
+void displayWelcome()
+{
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Welcome to TOS!");
@@ -22,23 +24,25 @@ void displayWelcome(){
   lcd.print("Press B1 to Start");
 }
 
-void displayGo(){
+void displayGo()
+{
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Go!");
 }
 
-void displaySequence(int seq[NUM_BUTTONS]){
+void displaySequence(int seq[NUM_BUTTONS])
+{
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Sequence:");
   lcd.setCursor(0, 1);
-  for (int i = 0; i < NUM_BUTTONS; i++){
+  for (int i = 0; i < NUM_BUTTONS; i++)
     lcd.print(seq[i]);
-  }
 }
 
-void displaySuccess(int score){
+void displaySuccess(int score)
+{
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("GOOD!");
@@ -47,7 +51,8 @@ void displaySuccess(int score){
   lcd.print(score);
 }
 
-void displayGameOver(int score){
+void displayGameOver(int score)
+{
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Game Over");
@@ -56,24 +61,28 @@ void displayGameOver(int score){
   lcd.print(score);
 }
 
-void displayScore(int score){
+void displayScore(int score)
+{
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Score: ");
   lcd.print(score);
 }
 
-void displayLevel(int level){
+void displayLevel(int level)
+{
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Level: ");
   lcd.print(level);
 }
 
-void lcdSleep(){
+void lcdSleep()
+{
   lcd.setBacklight(0);
 }
 
-void lcdWake(){
+void lcdWake()
+{
   lcd.setBacklight(1);
 }
