@@ -56,6 +56,7 @@ void pulseRedLedInIntro()
   }
   else if (pulseVal <= 0)
   {
+    delay(50);
     pulseVal = 0;
     pulseDir = 1;
   }

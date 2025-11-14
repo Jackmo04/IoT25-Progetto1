@@ -186,11 +186,11 @@
     [ "uno:A5.2", "lcd1:SCL", "green", [ "v0" ] ],
     [ "lcd1:SDA", "uno:A4.2", "green", [ "h0" ] ],
     [ "led5:C", "r9:1", "green", [ "v0" ] ],
-    [ "led5:A", "uno:13", "blue", [ "h9.6", "v-364.8", "h-682" ] ],
     [ "uno:GND.2", "r9:2", "black", [ "v86.3", "h599.1", "v116.4" ] ],
     [ "pot1:GND", "uno:GND.2", "black", [ "h-57.6", "v-431.9" ] ],
     [ "pot1:SIG", "uno:A0", "green", [ "h-58", "v-220.8", "h53.8" ] ],
-    [ "pot1:VCC", "uno:5V", "red", [ "h-58.4", "v-383.9" ] ]
+    [ "pot1:VCC", "uno:5V", "red", [ "h-58.4", "v-383.9" ] ],
+    [ "uno:6", "led5:A", "blue", [ "v-48", "h608.5", "v364.8" ] ]
   ],
   "dependencies": {}
 }
