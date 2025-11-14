@@ -9,9 +9,9 @@
 
 void setup()
 {
-#ifdef DEBUG
+  #ifdef DEBUG
   Serial.begin(9600);
-#endif
+  #endif
   initButtons();
   initLeds();
   initDisplay();

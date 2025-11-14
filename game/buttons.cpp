@@ -33,12 +33,12 @@ void buttonHandler(int i)
       lastButtonPressedTimestamps[i] = timestamp;
     }
   }
-#ifdef DEBUG_VERBOSE
+  #ifdef DEBUG_VERBOSE
   else
   {
     Serial.println("Button " + String(i + 1) + " ignored due to bouncing");
   }
-#endif
+  #endif
 }
 
 void initButtons()
@@ -76,9 +76,9 @@ int* getPressOrder()
 
 void wakeUp()
 {
-#ifdef WOKWI_SIMULATION
+  #ifdef WOKWI_SIMULATION
   buttonPressed[0] = true;
-#endif
+  #endif
 }
 
 void prepareSleep()

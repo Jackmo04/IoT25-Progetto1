@@ -25,6 +25,12 @@ void setGreenLed(int number, bool on)
   digitalWrite(greenPins[number - 1], on ? HIGH : LOW);
 }
 
+void setAllGreenLeds(bool on)
+{
+  for (int i = 1; i <= NUM_BUTTONS; i++)
+    setGreenLed(i, on);
+}
+
 void setRedLed(bool on)
 {
   digitalWrite(RED_LED_PIN, on ? HIGH : LOW);
@@ -32,8 +38,7 @@ void setRedLed(bool on)
 
 void allLedsOff()
 {
-  for (int i = 1; i <= NUM_BUTTONS; i++)
-    setGreenLed(i, false);
+  setAllGreenLeds(false);
   setRedLed(false);
 }
 

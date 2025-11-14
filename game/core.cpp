@@ -152,6 +152,23 @@ void prepareRound()
   roundStartT = millis();
 }
 
+void gameSuccess() {
+  score++;
+  setAllGreenLeds(true);
+  displaySuccess(score);
+  #ifdef DEBUG
+  Serial.println("Correct! Score: " + String(score));
+  #endif
+  availableTime *= levelfactor;
+  if (availableTime < 500)
+    availableTime = 500;
+  #ifdef DEBUG
+  Serial.println("Available time: " + String(availableTime / 1000.0) + " s");
+  #endif
+  isRoundActive = false;
+  delay(INTER_ROUND_DELAY);
+}
+
 void playGame()
 {
   if (isJustEnteredInState())
@@ -163,9 +180,7 @@ void playGame()
   }
 
   if (!isRoundActive)
-  {
     prepareRound();
-  }
 
   if (isRoundActive && (millis() - roundStartT) > availableTime)
   {
@@ -183,46 +198,27 @@ void playGame()
     if (isButtonPressed(b))
       setGreenLed(b + 1, true);
 
+    if (pressOrder[b] == 0)
+      continue;
+    
     if (pressOrder[b] != currentSequence[b])
     {
-      if (pressOrder[b] != 0)
-      {
-        #ifdef DEBUG
-        Serial.println("Wrong button!");
-        #endif
-        gameOver();
-        return;
-      }
+      #ifdef DEBUG
+      Serial.println("Wrong button!");
+      #endif
+      gameOver();
+      return;
     }
+    correctPresses++;
   }
 
-  for (int b = 0; b < NUM_BUTTONS; b++)
-  {
-    if (pressOrder[b] == currentSequence[b] && pressOrder[b] != 0)
-      correctPresses++;
-  }
-
-  if (correctPresses == NUM_BUTTONS)
-  {
-    score++;
-    displaySuccess(score);
-    #ifdef DEBUG
-    Serial.println("Correct! Score: " + String(score));
-    #endif
-    availableTime *= levelfactor;
-    if (availableTime < 500)
-      availableTime = 500;
-    #ifdef DEBUG
-    Serial.println("Available time: " + String(availableTime / 1000.0) + " s");
-    #endif
-    isRoundActive = false;
-    delay(INTER_ROUND_DELAY);
-  }
-  else
+  if (correctPresses < NUM_BUTTONS)
   {
     correctPresses = 0;
+    return;
   }
-  
+
+  gameSuccess();  
 }
 
 void gameOver()

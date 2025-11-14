@@ -3,6 +3,7 @@
 
 void initLeds();
 void setGreenLed(int number, bool on);
+void setAllGreenLeds(bool on);
 void setRedLed(bool on);
 void pulseRedLedInIntro();
 void allLedsOff();
