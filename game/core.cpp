@@ -74,6 +74,7 @@ void intro()
     allLedsOff();
     displayWelcome();
     resetButtons();
+    delay(100);
   }
   pulseRedLedInIntro();
 

@@ -46,7 +46,7 @@ void initButtons()
   for (int i = 0; i < NUM_BUTTONS; i++)
   {
     pinMode(inputPins[i], INPUT);
-    enableInterrupt(inputPins[i], buttonHandlers[i], CHANGE);
+    enableInterrupt(inputPins[i], buttonHandlers[i], RISING);
     lastButtonPressedTimestamps[i] = millis();
     buttonPressed[i] = false;
     pressOrder[i] = 0;
@@ -87,7 +87,7 @@ void prepareSleep()
   {
     disableInterrupt(inputPins[i]);
   }
-  enableInterrupt(inputPins[0], wakeUp, CHANGE);
+  enableInterrupt(inputPins[0], wakeUp, RISING);
 }
 
 void endSleep()
@@ -95,7 +95,7 @@ void endSleep()
   disableInterrupt(inputPins[0]);
   for (int i = 0; i < NUM_BUTTONS; i++)
   {
-    enableInterrupt(inputPins[i], buttonHandlers[i], CHANGE);
+    enableInterrupt(inputPins[i], buttonHandlers[i], RISING);
     buttonPressed[i] = false;
   }
 }
