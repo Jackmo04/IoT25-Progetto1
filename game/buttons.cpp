@@ -8,6 +8,8 @@
 
 unsigned short inputPins[NUM_BUTTONS] = {BTN_01_PIN, BTN_02_PIN, BTN_03_PIN, BTN_04_PIN};
 volatile bool buttonPressed[NUM_BUTTONS] = {false, false, false, false};
+volatile int pressOrder[NUM_BUTTONS] = {0, 0, 0, 0};
+volatile int pressCount = 0;
 unsigned long lastButtonPressedTimestamps[NUM_BUTTONS];
 
 void buttonHandler0() { buttonHandler(0); }
@@ -23,9 +25,11 @@ void buttonHandler(int i)
   if (timestamp - lastButtonPressedTimestamps[i] > BOUNCING_TIME)
   {
     int status = digitalRead(inputPins[i]);
-    if (status == HIGH && !buttonPressed[i])
+    if (status == HIGH && pressCount < NUM_BUTTONS)
     {
       buttonPressed[i] = true;
+      pressOrder[pressCount] = i + 1;
+      pressCount++;
       lastButtonPressedTimestamps[i] = timestamp;
     }
   }
@@ -45,14 +49,14 @@ void initButtons()
     enableInterrupt(inputPins[i], buttonHandlers[i], CHANGE);
     lastButtonPressedTimestamps[i] = millis();
     buttonPressed[i] = false;
+    pressOrder[i] = 0;
   }
+  pressCount = 0;
 }
 
 bool isButtonPressed(int buttonIndex)
 {
-  bool pressed = buttonPressed[buttonIndex];
-  buttonPressed[buttonIndex] = false;
-  return pressed;
+  return buttonPressed[buttonIndex];
 }
 
 void resetButtons()
@@ -60,7 +64,14 @@ void resetButtons()
   for (int i = 0; i < NUM_BUTTONS; i++)
   {
     buttonPressed[i] = false;
+    pressOrder[i] = 0;
   }
+  pressCount = 0;
+}
+
+int* getPressOrder()
+{
+  return pressOrder;
 }
 
 void wakeUp()

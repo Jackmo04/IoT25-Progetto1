@@ -22,6 +22,7 @@ unsigned long roundStartT = 0;
 int currentSequence[NUM_BUTTONS];
 int currentSeqIndex = 0;
 int score = 0;
+int correctPresses = 0;
 bool isRoundActive = false;
 
 int level = 1;
@@ -67,9 +68,9 @@ void intro()
 {
   if (isJustEnteredInState())
   {
-#ifdef DEBUG
+    #ifdef DEBUG
     Serial.println("Intro...");
-#endif
+    #endif
     allLedsOff();
     displayWelcome();
     resetButtons();
@@ -90,10 +91,10 @@ void intro()
         level = lvl;
         lastLvlChangeT = millis();
         displayLevel(level);
-#ifdef DEBUG
+        #ifdef DEBUG
         Serial.print("Level changed to: ");
         Serial.println(level);
-#endif
+        #endif
       }
       pulseRedLedInIntro();
     }
@@ -120,9 +121,9 @@ void intro()
 
 void prepareGame()
 {
-#ifdef DEBUG
+  #ifdef DEBUG
   Serial.println("Preparing the game...");
-#endif
+  #endif
   allLedsOff();
   resetButtons();
   score = 0;
@@ -139,13 +140,14 @@ void prepareRound()
   generateSequence(currentSequence);
   displaySequence(currentSequence);
   resetButtons();
-#ifdef DEBUG
+  #ifdef DEBUG
   Serial.print("Sequence: ");
   for (int i = 0; i < 4; i++)
     Serial.print(currentSequence[i]);
   Serial.println();
-#endif
+  #endif
   currentSeqIndex = 0;
+  correctPresses = 0;
   isRoundActive = true;
   roundStartT = millis();
 }
@@ -155,9 +157,9 @@ void playGame()
   if (isJustEnteredInState())
   {
     prepareGame();
-#ifdef DEBUG
+    #ifdef DEBUG
     Serial.println("Starting game...");
-#endif
+    #endif
   }
 
   if (!isRoundActive)
@@ -167,61 +169,68 @@ void playGame()
 
   if (isRoundActive && (millis() - roundStartT) > availableTime)
   {
-#ifdef DEBUG
+    #ifdef DEBUG
     Serial.println("Timeout!");
-#endif
+    #endif
     gameOver();
     return;
   }
 
+  int* pressOrder = getPressOrder();
+  
   for (int b = 0; b < NUM_BUTTONS; b++)
   {
     if (isButtonPressed(b))
+      setGreenLed(b + 1, true);
+
+    if (pressOrder[b] != currentSequence[b])
     {
-      int pressedDigit = b + 1;
-#ifdef DEBUG
-      Serial.println("Registered: " + String(pressedDigit));
-#endif
-      setGreenLed(pressedDigit, true);
-      if (pressedDigit != currentSequence[currentSeqIndex])
+      if (pressOrder[b] != 0)
       {
-#ifdef DEBUG
+        #ifdef DEBUG
         Serial.println("Wrong button!");
-#endif
+        #endif
         gameOver();
         return;
       }
-      else
-      {
-        currentSeqIndex++;
-        if (currentSeqIndex >= 4)
-        {
-          score++;
-          displaySuccess(score);
-#ifdef DEBUG
-          Serial.println("Correct! Score: " + String(score));
-#endif
-          availableTime *= levelfactor;
-          if (availableTime < 500)
-            availableTime = 500;
-#ifdef DEBUG
-          Serial.println("Available time: " + String(availableTime / 1000.0) + " s");
-#endif
-          isRoundActive = false;
-          delay(INTER_ROUND_DELAY);
-        }
-      }
-      resetButtons();
     }
   }
+
+  for (int b = 0; b < NUM_BUTTONS; b++)
+  {
+    if (pressOrder[b] == currentSequence[b] && pressOrder[b] != 0)
+      correctPresses++;
+  }
+
+  if (correctPresses == NUM_BUTTONS)
+  {
+    score++;
+    displaySuccess(score);
+    #ifdef DEBUG
+    Serial.println("Correct! Score: " + String(score));
+    #endif
+    availableTime *= levelfactor;
+    if (availableTime < 500)
+      availableTime = 500;
+    #ifdef DEBUG
+    Serial.println("Available time: " + String(availableTime / 1000.0) + " s");
+    #endif
+    isRoundActive = false;
+    delay(INTER_ROUND_DELAY);
+  }
+  else
+  {
+    correctPresses = 0;
+  }
+  
 }
 
 void gameOver()
 {
-#ifdef DEBUG
+  #ifdef DEBUG
   Serial.println("Game Over! Final Score: " + String(score));
   Serial.println("Returning to Intro in " + String(GAMEOVER_TOTAL_DURATION / 1000.0) + " seconds...");
-#endif
+  #endif
   allLedsOff();
   setRedLed(true);
   displayGameOver(score);
@@ -237,20 +246,20 @@ void sleepNow()
   lcdSleep();
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
   sleep_enable();
-#ifdef DEBUG
+  #ifdef DEBUG
   Serial.println("Going to sleep...");
-#endif
+  #endif
   prepareSleep();
   sleep_mode();
-#ifdef WOKWI_SIMULATION
+  #ifdef WOKWI_SIMULATION
   while (!isButtonPressed(0)) // busy wait to simulate sleep
     delay(200);
-#endif
+  #endif
   sleep_disable();
   endSleep();
-#ifdef DEBUG
+  #ifdef DEBUG
   Serial.println("Woke up!");
-#endif
+  #endif
   lcdWake();
   changeState(INTRO_STATE);
 }

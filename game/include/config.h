@@ -35,12 +35,12 @@
 // Debug and simulation settings below, comment/uncomment as needed
 
 /* Enable debug serial output */
-// #define DEBUG
+#define DEBUG
 
 /* Enable verbose debug output */
 // #define DEBUG_VERBOSE
 
 /* Uncomment ONLY if running in Wokwi simulation environment */
-// #define WOKWI_SIMULATION
+#define WOKWI_SIMULATION
 
 #endif
